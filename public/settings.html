@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurações — Vision X</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .settings-container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 2rem;
+            background: var(--bg-sidebar);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            box-shadow: var(--shadow-premium);
+        }
+
+        .settings-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 2rem;
+        }
+
+        .settings-header h1 {
+            font-size: 1.8rem;
+            margin: 0;
+        }
+
+        .settings-form section {
+            padding: 1.5rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .settings-form section:last-child {
+            border-bottom: none;
+        }
+
+        .settings-form h3 {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            color: var(--text-white);
+        }
+
+        .form-row {
+            margin-bottom: 1rem;
+        }
+
+        .form-row label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-row input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            padding: 0.8rem;
+            border-radius: 10px;
+            color: var(--text-white);
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .form-row input:focus {
+            border-color: var(--primary);
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--text-muted);
+            text-decoration: none;
+            margin-bottom: 2rem;
+            transition: 0.3s;
+        }
+
+        .back-link:hover {
+            color: var(--primary);
+        }
+
+        .actions {
+            margin-top: 2rem;
+            display: flex;
+            justify-content: flex-end;
+        }
+    </style>
+</head>
+
+<body class="dark-theme">
+    <div class="app-container" style="display: block; overflow-y: auto;">
+        <div class="settings-container">
+            <a href="index.html" class="back-link"><i data-lucide="arrow-left" style="width:16px;"></i> Voltar ao
+                Dashboard</a>
+
+            <div class="settings-header">
+                <i data-lucide="settings" style="color: var(--primary); width: 32px; height: 32px;"></i>
+                <h1>Configurações da Conta</h1>
+            </div>
+
+            <div id="settings-message" class="auth-message"></div>
+
+            <form id="settings-form" class="settings-form">
+                <section>
+                    <h3>Perfil</h3>
+                    <div class="form-row">
+                        <label>Nome Completo</label>
+                        <input type="text" id="setName" placeholder="Seu nome">
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Credenciais</h3>
+                    <div class="form-row">
+                        <label>E-mail</label>
+                        <input type="email" id="setEmail" placeholder="seu@email.com">
+                    </div>
+                    <div class="form-row">
+                        <label>Nova Senha (deixe em branco para não alterar)</label>
+                        <input type="password" id="setPass" placeholder="••••••••">
+                    </div>
+                </section>
+
+                <div class="actions">
+                    <button type="submit" class="btn-primary">Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="settings.js"></script>
+    <script>lucide.createIcons();</script>
+</body>
+
+</html>

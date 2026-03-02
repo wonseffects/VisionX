@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VisionX | Inteligência de Dados em Tempo Real</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body class="landing-page">
+    <header class="navbar">
+        <div class="logo">
+            Vision<span>X</span>
+        </div>
+        <nav class="nav-links">
+            <a href="#home">Home</a>
+            <a href="#how-it-works">Como Funciona</a>
+            <a href="#pricing">Preços</a>
+        </nav>
+        <div class="nav-actions">
+            <button id="loginBtn" class="btn-secondary">Entrar</button>
+            <button id="signupBtn" class="btn-primary">Criar Conta</button>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero" id="home">
+            <div class="hero-content">
+                <h1>Analise de dados com <span class="gradient-text">Inteligência Artificial</span></h1>
+                <p>O VisionX transforma perguntas simples em dashboards profissionais, gráficos e análises profundas em
+                    segundos. Pare de brigar com planilhas e comece a decidir com dados.</p>
+                <div class="hero-actions">
+                    <button class="btn-primary lg" id="heroStartBtn">Começar Teste Grátis</button>
+                    <button class="btn-secondary lg">Agendar Demo</button>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="mockup-frame">
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800"
+                        alt="Dashboard Preview" style="width: 100%; border-radius: 20px;">
+                </div>
+            </div>
+        </section>
+
+        <section id="how-it-works">
+            <div class="section-header">
+                <h2>Tecnologia de <span class="gradient-text">Ponta</span></h2>
+                <p>Desenvolvido para empresários que não têm tempo a perder.</p>
+            </div>
+            <div class="pricing-grid">
+                <div class="price-card">
+                    <i data-lucide="zap" style="color: var(--primary); margin-bottom: 1rem;"></i>
+                    <h3>Velocidade Incrível</h3>
+                    <p>Respostas em tempo real para qualquer consulta de dados complexa.</p>
+                </div>
+                <div class="price-card">
+                    <i data-lucide="bar-chart-3" style="color: var(--secondary); margin-bottom: 1rem;"></i>
+                    <h3>Visualizações Premium</h3>
+                    <p>Gráficos interativos e dashboards prontos para apresentação.</p>
+                </div>
+                <div class="price-card">
+                    <i data-lucide="shield-check" style="color: var(--accent); margin-bottom: 1rem;"></i>
+                    <h3>Segurança Enterprise</h3>
+                    <p>Seus dados são protegidos com criptografia de ponta a ponta.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="pricing">
+            <div class="section-header">
+                <h2>Planos <span class="gradient-text">Flexíveis</span></h2>
+                <p>Escolha o plano ideal para o momento da sua empresa.</p>
+            </div>
+            <div class="pricing-grid">
+                <div class="price-card">
+                    <h3>Pro Mensal</h3>
+                    <div class="price-value">R$ 97<span>/mês</span></div>
+                    <ul style="list-style: none; color: var(--text-muted); margin-bottom: 2rem;">
+                        <li><i data-lucide="check" style="width:16px; margin-right:8px;"></i>Geração Ilimitada</li>
+                        <li><i data-lucide="check" style="width:16px; margin-right:8px;"></i>Suporte 24/7</li>
+                        <li><i data-lucide="check" style="width:16px; margin-right:8px;"></i>Exportação PDF</li>
+                    </ul>
+                    <button class="btn-secondary full-width">Assinar Agora</button>
+                </div>
+                <div class="price-card featured">
+                    <h3>Pro Anual</h3>
+                    <div class="price-value">R$ 930<span>/ano</span></div>
+                    <ul style="list-style: none; color: var(--text-white); margin-bottom: 2rem;">
+                        <li><i data-lucide="check" style="width:16px; margin-right:8px; color: #4ade80;"></i>Tudo do
+                            Mensal</li>
+                        <li><i data-lucide="check" style="width:16px; margin-right:8px; color: #4ade80;"></i>2 Meses
+                            Grátis</li>
+                        <li><i data-lucide="check" style="width:16px; margin-right:8px; color: #4ade80;"></i>Acesso
+                            Antecipado</li>
+                    </ul>
+                    <button class="btn-primary full-width">Melhor Oferta</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Auth Modals -->
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <div class="auth-tabs">
+                <button class="tab-btn active" data-tab="login"
+                    style="flex:1; border:none; cursor:pointer;">Login</button>
+                <button class="tab-btn" data-tab="signup"
+                    style="flex:1; border:none; cursor:pointer; opacity: 0.5;">Cadastro</button>
+            </div>
+            <div class="auth-form-body">
+                <form id="authForm">
+                    <div id="auth-message" class="auth-message"></div>
+                    <div id="signupFields" style="display: none;">
+                        <input type="text" id="fullName" placeholder="Seu Nome Completo">
+                    </div>
+                    <input type="email" id="email" placeholder="Seu melhor e-mail" required>
+                    <input type="password" id="password" placeholder="Sua senha" required>
+                    <button type="submit" class="btn-primary" style="width: 100%; margin-top: 10px;">Confirmar</button>
+                </form>
+                <button id="closeModal" class="btn-secondary"
+                    style="width:100%; margin-top: 10px; border:none;">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <footer
+        style="padding: 50px 8%; text-align: center; border-top: 1px solid var(--border-color); color: var(--text-muted);">
+        <p>&copy; 2026 VisionX Enterprise. Soluções inteligentes para negócios.</p>
+    </footer>
+
+    <script src="auth.js"></script>
+    <script>lucide.createIcons();</script>
+</body>
+
+</html>

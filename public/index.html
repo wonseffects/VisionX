@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vision X — DataViz AI</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body class="dark-theme">
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <div class="logo-icon">V</div>
+                    <h1>Vision X</h1>
+                </div>
+            </div>
+            <div class="new-chat-container">
+                <button id="new-chat-btn" class="btn-primary">
+                    <i data-lucide="plus-circle"></i> Novo Dashboard
+                </button>
+            </div>
+            <div class="history-container">
+                <h3>Histórico</h3>
+                <ul id="chat-history-list">
+                    <!-- History items will be injected here -->
+                    <li class="empty-history">Sem histórico recente</li>
+                </ul>
+            </div>
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="avatar">U</div>
+                    <span>Usuário</span>
+                </div>
+                <div class="footer-actions">
+                    <button id="settings-btn" class="icon-btn" title="Configurações"><i
+                            data-lucide="settings"></i></button>
+                    <button id="logout-btn" class="icon-btn" title="Sair"><i data-lucide="log-out"></i></button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-dashboard">
+            <header class="app-header">
+                <div class="header-left">
+                    <button id="mobile-menu-btn" class="icon-btn mobile-only"><i data-lucide="menu"></i></button>
+                    <span class="chat-status">Pronto para analisar dados</span>
+                </div>
+                <div class="header-right">
+                    <button id="theme-toggle" class="icon-btn"><i data-lucide="moon"></i></button>
+                </div>
+            </header>
+
+            <div class="chat-wrapper">
+                <div id="chat-messages" class="chat-messages">
+                    <!-- Placeholder Welcome Message -->
+                    <div class="message system">
+                        <div class="avatar-system">V</div>
+                        <div class="message-bubble">
+                            <h2>Olá! Eu sou o Vision X.</h2>
+                            <p>Transforme suas perguntas em dashboards profissionais. Tente algo como:</p>
+                            <div class="suggestions">
+                                <button class="suggestion-chip">"Compare o PIB do Brasil vs China nos últimos 10
+                                    anos"</button>
+                                <button class="suggestion-chip">"Quais foram as linguagens de programação mais usadas em
+                                    2024?"</button>
+                                <button class="suggestion-chip">"Evolução das ações da Tech corp no último
+                                    semestre"</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-area">
+                    <div class="input-container">
+                        <textarea id="user-input" placeholder="Digite sua pergunta de análise..." rows="1"></textarea>
+                        <button id="send-btn" class="send-btn">
+                            <i data-lucide="send"></i>
+                        </button>
+                    </div>
+                    <p class="input-hint">Pressione Enter para enviar. Vision X usa IA para gerar visualizações.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal for Settings/API Key -->
+    <div id="settings-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Configurações</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Modo de Exibição</label>
+                    <select id="ui-theme">
+                        <option value="dark">Escuro (Premium)</option>
+                        <option value="light">Claro</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Groq API Key (Local)</label>
+                    <input type="password" id="local-api-key" placeholder="gsk_...">
+                    <small>Seu código é salvo apenas no navegador.</small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-primary save-settings">Salvar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Delete Confirmation -->
+    <div id="delete-confirm-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 style="color: #ef4444;">Apagar Conversa</h2>
+                <button class="close-delete-modal close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom: 20px;">Tem certeza que deseja apagar essa conversa, uma vez deletada ela nunca
+                    mais podera ser restaurada!</p>
+            </div>
+            <div class="modal-footer"
+                style="display: flex; gap: 10px; justify-content: flex-end; padding: 1.5rem 2rem;">
+                <button id="cancel-delete-btn" class="btn-secondary">Cancelar</button>
+                <button id="confirm-delete-btn" class="btn-primary"
+                    style="background: #ef4444; box-shadow: 0 8px 20px -5px rgba(239, 68, 68, 0.4);">Excluir</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>
