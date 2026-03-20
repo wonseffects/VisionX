@@ -1,0 +1,6 @@
+Vision X Password Db:aGPLb9qSk14iMdlt
+
+
+Adicione opção de remover chats salvos, um botãozinho ao lado do titulo, e adicione estilos nas menssagens de login e cadastro sem exibir ela com javascript cru.
+
+Twilo recover pass:JLY3ESZSJZWF3PSDDBLU1UD2

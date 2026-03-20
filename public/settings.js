@@ -33,8 +33,57 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     // Load current data
-    nameInput.value = user.user_metadata.full_name || '';
+    nameInput.value = user.user_metadata?.full_name || '';
     emailInput.value = user.email || '';
+
+    // Load current plan
+    const loadPlan = async () => {
+        try {
+            const { data: profile, error } = await supabaseClient
+                .from('profiles')
+                .select('subscription_status, trial_start')
+                .eq('id', user.id)
+                .single();
+            
+            if (error) throw error;
+            
+            const planTitle = document.getElementById('plan-title');
+            const planDesc = document.getElementById('plan-desc');
+            const planBox = document.getElementById('plan-status-box');
+            
+            if (profile.subscription_status === 'premium') {
+                planTitle.innerHTML = '<i data-lucide="check-circle"></i> Plano Premium';
+                planTitle.style.color = '#22c55e'; // green
+                planDesc.innerText = 'Acesso ilimitado a todas as análises e recursos.';
+                const upgradeBtn = planBox.querySelector('button');
+                if (upgradeBtn) upgradeBtn.style.display = 'none';
+            } else {
+                planTitle.innerHTML = '<i data-lucide="clock"></i> Plano Free (Teste)';
+                planTitle.style.color = 'var(--text-white)';
+                
+                const trialStart = new Date(profile.trial_start).getTime();
+                const now = new Date().getTime();
+                const threeDaysMs = 3 * 24 * 60 * 60 * 1000;
+                const timeDiff = (trialStart + threeDaysMs) - now;
+                
+                if (timeDiff > 0) {
+                    const daysRemaining = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+                    planDesc.innerText = `Seu período de teste grátis expira em ${daysRemaining} dia(s).`;
+                } else {
+                    planTitle.innerHTML = '<i data-lucide="alert-circle"></i> Teste Expirado';
+                    planTitle.style.color = '#ef4444'; // red
+                    planDesc.innerText = 'Seu teste grátis expirou. Faça upgrade para continuar.';
+                }
+            }
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        } catch(err) {
+            console.warn('Erro ao carregar plano:', err);
+            const planTitle = document.getElementById('plan-title');
+            if(planTitle) planTitle.innerText = 'Erro ao carregar plano';
+        }
+    };
+    
+    loadPlan();
 
     if (settingsForm) {
         settingsForm.addEventListener('submit', async (e) => {

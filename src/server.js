@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import chatRoutes from './routes/chat.js';
+import paymentRoutes from './routes/payment.js';
 
 dotenv.config({ override: true });
 
@@ -28,6 +29,35 @@ app.get('/', (req, res) => {
 
 // Protect chat routes
 app.use('/api/chat', authMiddleware, chatRoutes);
+
+// Protect payment routes (except webhook)
+app.post('/api/payment/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
+    try {
+        const { createClient } = await import('@supabase/supabase-js');
+        const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
+        
+        let event = req.body;
+        if (Buffer.isBuffer(event)) {
+            event = JSON.parse(event.toString('utf8'));
+        }
+
+        if (event.type === 'order.paid' && event.data?.metadata?.user_id) {
+            const userId = event.data.metadata.user_id;
+            const { error: updateError } = await supabase
+                .from('profiles')
+                .update({ subscription_status: 'premium' })
+                .eq('id', userId);
+                
+            if (updateError) console.error("Erro no Webhook Supabase:", updateError);
+        }
+        res.status(200).send('OK');
+    } catch (error) {
+        console.error('Webhook error:', error);
+        res.status(500).send('Error processing webhook');
+    }
+});
+
+app.use('/api/payment', paymentRoutes);
 
 // Catch-all to serve index.html (the app) for other routes
 app.use((req, res) => {

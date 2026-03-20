@@ -450,6 +450,13 @@ section {
     gap: 1.5rem;
 }
 
+.message-bubble {
+    padding: 1.5rem 2rem;
+    max-width: 85%;
+    font-size: 1.05rem;
+    line-height: 1.6;
+}
+
 .message.user .message-bubble {
     background: var(--gradient-main);
     color: white;

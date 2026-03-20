@@ -20,6 +20,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
+    const userFullName = session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'Usuário';
+    const userProfileName = document.querySelector('.user-profile span');
+    const userProfileAvatar = document.querySelector('.user-profile .avatar');
+    
+    if (userProfileName) userProfileName.innerText = userFullName;
+    if (userProfileAvatar) userProfileAvatar.innerText = userFullName.charAt(0).toUpperCase();
+
     // Elements
     const chatMessages = document.getElementById('chat-messages');
     const userInput = document.getElementById('user-input');
@@ -197,7 +204,22 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (saveError) console.error('Error saving chat:', saveError);
                 loadHistory(); // Refresh history list
             } else {
-                addMessage('system', `Erro: ${data.error || 'Falha na geração'}`);
+                if (res.status === 403 || data.needsSubscription) {
+                    addMessage('system', `
+                        <div style="padding: 10px 0;">
+                            <h3 style="color: #ef4444; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+                                <i data-lucide="alert-circle"></i> Teste Grátis Expirado
+                            </h3>
+                            <p style="margin-bottom: 20px;">Seu período de teste grátis chegou ao fim. Para continuar gerando dashboards incríveis, por favor, faça o upgrade para o plano Premium.</p>
+                            <button onclick="document.getElementById('upgrade-modal').style.display='flex';" class="btn-primary" style="background: var(--gradient-main); width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                                <i data-lucide="zap"></i> Fazer Upgrade Agora
+                            </button>
+                        </div>
+                    `);
+                    if (typeof lucide !== 'undefined') lucide.createIcons();
+                } else {
+                    addMessage('system', `Erro: ${data.error || 'Falha na geração'}`);
+                }
             }
         } catch (err) {
             if (loading && loading.parentNode) chatMessages.removeChild(loading);

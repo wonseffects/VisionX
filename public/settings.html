@@ -111,6 +111,21 @@
             <div id="settings-message" class="auth-message"></div>
 
             <form id="settings-form" class="settings-form">
+                <section id="plan-section">
+                    <h3>Plano Atual</h3>
+                    <div class="form-row">
+                        <div id="plan-status-box" style="background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border); padding: 1.2rem; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; gap: 15px; flex-wrap: wrap;">
+                            <div>
+                                <h4 id="plan-title" style="margin-bottom: 5px; color: var(--primary); display: flex; align-items: center; gap: 8px;">
+                                    <i data-lucide="loader" class="spin-icon"></i> Carregando...
+                                </h4>
+                                <p id="plan-desc" style="font-size: 0.9rem; color: var(--text-muted);">Verificando status do seu plano...</p>
+                            </div>
+                            <button type="button" onclick="window.location.href='index.html?upgrade=true'" class="btn-primary" style="padding: 0.6rem 1.2rem; font-size: 0.9rem; flex-shrink: 0; background: var(--gradient-main);">Fazer Upgrade</button>
+                        </div>
+                    </div>
+                </section>
+
                 <section>
                     <h3>Perfil</h3>
                     <div class="form-row">

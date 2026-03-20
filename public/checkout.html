@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout | VisionX</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { background: var(--bg-dark); min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+        .checkout-container { max-width: 900px; width: 90%; background: var(--bg-sidebar); border-radius: 20px; border: 1px solid var(--border-color); display: flex; overflow: hidden; box-shadow: var(--shadow-premium); }
+        .checkout-left { flex: 1; padding: 40px; border-right: 1px solid var(--border-color); }
+        .checkout-right { flex: 1; padding: 40px; background: rgba(0,0,0,0.1); }
+        .checkout-header { margin-bottom: 30px; }
+        .checkout-header h2 { font-size: 1.8rem; margin-bottom: 10px; }
+        
+        .plan-summary { background: rgba(99, 102, 241, 0.05); border: 1px solid var(--primary); padding: 20px; border-radius: 12px; margin-bottom: 30px; }
+        .plan-summary h3 { margin-bottom: 10px; color: white; display:flex; justify-content: space-between; }
+        .plan-summary p { color: var(--text-muted); font-size: 0.9rem; }
+        
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-size: 0.85rem; color: var(--text-muted); }
+        .form-group input { width: 100%; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border); padding: 12px; border-radius: 10px; color: white; outline: none; transition: 0.3s; }
+        .form-group input:focus { border-color: var(--primary); }
+        
+        .payment-methods { display: flex; gap: 10px; margin-bottom: 20px; }
+        .payment-methods button { flex: 1; padding: 12px; border-radius: 10px; font-weight: 600; cursor: pointer; transition: 0.3s; border: none; }
+        .btn-pix { background: #10b981; color: white; }
+        .btn-pix.inactive { background: var(--glass-bg); color: var(--text-muted); border: 1px solid var(--glass-border); }
+        .btn-card { background: var(--primary); color: white; }
+        .btn-card.inactive { background: var(--glass-bg); color: var(--text-muted); border: 1px solid var(--glass-border); }
+
+        .auth-overlay { position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 10; display: flex; align-items: center; justify-content: center; border-radius: 20px; display: none; }
+        
+        @media (max-width: 768px) {
+            .checkout-container { flex-direction: column; }
+            .checkout-left { border-right: none; border-bottom: 1px solid var(--border-color); }
+        }
+    </style>
+</head>
+
+<body>
+    <div style="position: absolute; top: 20px; left: 20px;">
+        <a href="landing.html" style="color: var(--text-muted); text-decoration: none; display: flex; align-items: center; gap: 5px; font-weight: 500;"><i data-lucide="arrow-left"></i> Voltar</a>
+    </div>
+
+    <div class="checkout-container" style="position: relative;">
+        <!-- Auth Step Overlay for non-logged-in users -->
+        <div id="checkout-auth-overlay" class="auth-overlay">
+            <div style="background: var(--bg-sidebar); padding: 30px; border-radius: 15px; border: 1px solid var(--glass-border); text-align: center; max-width: 400px; width: 90%;">
+                <h3 style="margin-bottom: 10px;">Quase lá!</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">Crie sua conta ou faça login para continuar com a assinatura.</p>
+                <form id="checkoutAuthForm" style="text-align: left;">
+                    <div id="checkout-auth-msg" class="auth-message" style="display:none; margin-bottom: 15px;"></div>
+                    <div class="form-group">
+                        <label>Nome</label>
+                        <input type="text" id="authName" required placeholder="Seu nome completo">
+                    </div>
+                    <div class="form-group">
+                        <label>E-mail</label>
+                        <input type="email" id="authEmail" required placeholder="seu@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Senha</label>
+                        <input type="password" id="authPassword" required placeholder="Sua senha">
+                    </div>
+                    <button type="submit" class="btn-primary" style="width: 100%; margin-top: 10px;" id="authSubmitBtn">Continuar para o Pagamento</button>
+                    <p style="text-align: center; margin-top: 15px; font-size: 0.8rem; color: var(--text-muted);">Se você já tem conta, faremos seu login automaticamente.</p>
+                </form>
+            </div>
+        </div>
+
+        <div class="checkout-left">
+            <div class="checkout-header">
+                <h2>Finalizar Assinatura</h2>
+                <p style="color: var(--text-muted);">Complete seu pagamento para acessar o VisionX Premium.</p>
+            </div>
+
+            <div class="plan-summary">
+                <h3><span id="plan-name-display">Pro Mensal</span> <span id="plan-price-display">R$ 49,90/mês</span></h3>
+                <p id="plan-desc-display">Acesso ilimitado, suporte prioritário e novos recursos.</p>
+            </div>
+
+            <div id="user-info-display" style="margin-bottom: 30px; display: none;">
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 5px;">Seus dados</p>
+                <div style="background: var(--glass-bg); padding: 15px; border-radius: 10px; border: 1px solid var(--glass-border); display: flex; align-items: center; justify-content: space-between;">
+                    <div>
+                        <strong id="logged-user-email">usuario@email.com</strong>
+                    </div>
+                    <button onclick="logout()" style="background: none; border: none; color: #ef4444; cursor: pointer; font-size: 0.85rem;">Sair</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="checkout-right">
+            <h3 style="margin-bottom: 20px; font-size: 1.2rem;">Método de Pagamento</h3>
+            
+            <div class="payment-methods">
+                <button id="tab-pix" class="btn-pix">Pix</button>
+                <button id="tab-card" class="btn-card inactive">Cartão de Crédito</button>
+            </div>
+
+            <div id="payment-msg" class="auth-message" style="display:none; margin-bottom: 20px;"></div>
+
+            <!-- Formulário PIX -->
+            <div id="form-pix" style="text-align: center;">
+                <p style="margin-bottom: 20px; font-size: 0.9rem; color: var(--text-muted);">Pagamento aprovado instantaneamente.</p>
+                <button id="btn-generate-pix" class="btn-primary" style="width: 100%; background: #10b981;">Gerar QR Code Pix</button>
+                
+                <div id="pix-container" style="display: none; margin-top: 20px;">
+                    <img id="pix-img" src="" alt="QR Code Pix" style="width: 200px; height: 200px; border-radius: 10px; margin: 0 auto 15px auto; display: block; background: white; padding: 10px;">
+                    <input type="text" id="pix-code" readonly style="width: 100%; background: var(--glass-bg); border: 1px solid var(--glass-border); color: white; padding: 10px; border-radius: 8px; margin-bottom: 10px; text-align: center; font-size: 0.75rem;" value="">
+                    <button id="btn-copy-pix" class="btn-secondary" style="width: 100%; padding: 0.8rem;"><i data-lucide="copy" style="width: 16px;"></i> Copiar Código Pix</button>
+                    <p style="margin-top: 20px; font-size: 0.85rem; color: var(--text-muted); display: flex; justify-content: center; align-items: center; gap: 8px;"><i data-lucide="loader" class="spin-icon"></i> Aguardando pagamento...</p>
+                </div>
+            </div>
+
+            <!-- Formulário Cartão -->
+            <form id="form-card" style="display: none;">
+                <div class="form-group">
+                    <label>Nome no Cartão</label>
+                    <input type="text" id="card-name" placeholder="Nome impresso no cartão" required>
+                </div>
+                <div class="form-group">
+                    <label>Número do Cartão</label>
+                    <input type="text" id="card-number" placeholder="0000 0000 0000 0000" maxlength="19" required>
+                </div>
+                <div style="display: flex; gap: 15px;">
+                    <div class="form-group" style="flex: 1;">
+                        <label>Validade</label>
+                        <input type="text" id="card-expiry" placeholder="MM/AA" maxlength="5" required>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>CVV</label>
+                        <input type="text" id="card-cvv" placeholder="123" maxlength="4" required>
+                    </div>
+                </div>
+                <button type="submit" id="btn-pay-card" class="btn-primary" style="width: 100%; margin-top: 10px;">Finalizar Assinatura</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="checkout.js"></script>
+    <script>lucide.createIcons();</script>
+</body>
+
+</html>
