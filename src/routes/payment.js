@@ -17,7 +17,7 @@ const getPagarmeAuth = () => {
 // 1. Generate PIX Payment
 router.post('/pix', async (req, res) => {
     try {
-        const { plan, user_id, email, name } = req.body;
+        const { plan, user_id, email, name, document } = req.body;
         
         const amount = plan === 'annual' ? 93000 : 4990;
         const itemName = plan === 'annual' ? "Assinatura Anual - VisionX Premium" : "Assinatura Mensal - VisionX Premium";
@@ -26,8 +26,9 @@ router.post('/pix', async (req, res) => {
             items: [{ amount: amount, description: itemName, quantity: 1, code: "visionx_premium" }],
             customer: {
                 name: name || 'Usuário VisionX',
-                email: email || 'usuario@visionx.com'
-                // Removed invalid '00000000000' document and 'type' which cause validation errors
+                email: email || 'usuario@visionx.com',
+                type: 'individual',
+                document: document // Added back, but now expecting a real CPF from frontend
             },
             payments: [{
                 payment_method: "pix",
@@ -44,11 +45,15 @@ router.post('/pix', async (req, res) => {
         });
 
         const order = response.data;
-        const pixData = order.charges[0].last_transaction.qr_code_url 
+        const pixData = order.charges?.[0]?.last_transaction?.qr_code_url 
                         ? order.charges[0].last_transaction 
                         : null;
 
-        if (!pixData) throw new Error("Falha ao gerar QR Code");
+        if (!pixData) {
+            const chargeError = order.charges?.[0]?.last_transaction?.gateway_response?.errors?.[0]?.message;
+            console.error("Ordem Pix com falha:", JSON.stringify(order));
+            throw new Error(chargeError || "O Pagar.me criou a ordem, mas recusou gerar o QR Code. (Normalmente por CPF inválido).");
+        }
 
         res.json({
             success: true,
@@ -67,7 +72,7 @@ router.post('/pix', async (req, res) => {
 // 2. Process Credit Card
 router.post('/card', async (req, res) => {
     try {
-        const { plan, user_id, email, name, card_name, card_number, card_expiry, card_cvv } = req.body;
+        const { plan, user_id, email, name, card_name, card_number, card_expiry, card_cvv, document } = req.body;
         
         const amount = plan === 'annual' ? 93000 : 4990;
         const itemName = plan === 'annual' ? "Assinatura Anual - VisionX Premium" : "Assinatura Mensal - VisionX Premium";
@@ -80,6 +85,8 @@ router.post('/card', async (req, res) => {
             customer: {
                 name: name || 'Usuário VisionX',
                 email: email || 'usuario@visionx.com',
+                type: 'individual',
+                document: document // Pass CPF to card too
             },
             payments: [{
                 payment_method: "credit_card",

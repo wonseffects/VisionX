@@ -153,6 +153,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         try {
             if(!guestUserId) throw new Error('Por favor, preencha seus dados primeiro.');
+            
+            const cpfVal = document.getElementById('user-cpf').value;
+            if(!cpfVal) throw new Error('Por favor, informe o seu CPF.');
 
             const headers = { 'Content-Type': 'application/json' };
             if (guestToken) headers['Authorization'] = `Bearer ${guestToken}`;
@@ -160,7 +163,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const res = await fetch('/api/payment/pix', {
                 method: 'POST',
                 headers,
-                body: JSON.stringify({ plan, user_id: guestUserId, email: loggedUserEmail.innerText.split(' ')[0] })
+                body: JSON.stringify({ plan, user_id: guestUserId, email: loggedUserEmail.innerText.split(' ')[0], document: cpfVal.replace(/\D/g, '') })
             });
             const data = await res.json();
             
@@ -221,6 +224,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         try {
             if(!guestUserId) throw new Error('Por favor, preencha seus dados primeiro.');
 
+            const cpfVal = document.getElementById('user-cpf').value;
+            if(!cpfVal) throw new Error('Por favor, informe o seu CPF.');
+
             const headers = { 'Content-Type': 'application/json' };
             if (guestToken) headers['Authorization'] = `Bearer ${guestToken}`;
 
@@ -231,6 +237,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     plan,
                     user_id: guestUserId,
                     email: loggedUserEmail.innerText.split(' ')[0],
+                    document: cpfVal.replace(/\D/g, ''),
                     card_name: document.getElementById('card-name').value,
                     card_number: document.getElementById('card-number').value.replace(/\s+/g, ''),
                     card_expiry: document.getElementById('card-expiry').value,
