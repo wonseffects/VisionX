@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         planDescDisplay.innerText = 'Acesso ilimitado + 2 Meses Grátis + Acesso Antecipado';
     } else {
         planNameDisplay.innerText = 'Pro Mensal';
-        planPriceDisplay.innerText = 'R$ 49,90/mês';
+        planPriceDisplay.innerText = 'R$ 1,99/mês (Teste)'; // Change to 49,90 later
         planDescDisplay.innerText = 'Geração ilimitada, suporte 24/7 e exportação HTML.';
     }
 
@@ -212,7 +212,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     const pixImg = document.getElementById('pix-img');
     const pixCode = document.getElementById('pix-code');
     const btnCopyPix = document.getElementById('btn-copy-pix');
+    const pixTimerDisplay = document.getElementById('pix-timer');
+    const pixTimerSpan = pixTimerDisplay ? pixTimerDisplay.querySelector('span') : null;
     let pixPollingInterval = null;
+    let pixCountdownInterval = null;
 
     btnGenPix.addEventListener('click', async () => {
         btnGenPix.innerText = 'Gerando...';
@@ -248,6 +251,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             
             btnGenPix.style.display = 'none';
             pixContainer.style.display = 'block';
+
+            if (data.expires_at) {
+                startPixTimer(data.expires_at);
+            }
             
             startPixPolling(data.order_id);
         } catch (err) {
@@ -256,6 +263,32 @@ document.addEventListener('DOMContentLoaded', async () => {
             btnGenPix.disabled = false;
         }
     });
+
+    const startPixTimer = (expiresAtStr) => {
+        if (pixCountdownInterval) clearInterval(pixCountdownInterval);
+        if (!pixTimerDisplay || !pixTimerSpan) return;
+
+        pixTimerDisplay.style.display = 'block';
+        const expireTime = new Date(expiresAtStr).getTime();
+
+        const updateTimer = () => {
+            const now = new Date().getTime();
+            const distance = expireTime - now;
+
+            if (distance < 0) {
+                clearInterval(pixCountdownInterval);
+                pixTimerSpan.innerText = 'Expirado';
+                return;
+            }
+
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            pixTimerSpan.innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        };
+
+        updateTimer();
+        pixCountdownInterval = setInterval(updateTimer, 1000);
+    };
 
     btnCopyPix.addEventListener('click', () => {
         pixCode.select();

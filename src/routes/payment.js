@@ -33,7 +33,7 @@ router.post('/pix', async (req, res) => {
     try {
         const { plan, user_id, email, name, document, phone } = req.body;
         
-        const amount = plan === 'annual' ? 93000 : 4990;
+        const amount = plan === 'annual' ? 93000 : 199; // 199 = R$ 1,99
         const itemName = plan === 'annual' ? "Assinatura Anual - VisionX Premium" : "Assinatura Mensal - VisionX Premium";
         
         const payload = {
@@ -76,7 +76,8 @@ router.post('/pix', async (req, res) => {
             success: true,
             order_id: order.id,
             qr_code: pixData.qr_code,
-            qr_code_url: pixData.qr_code_url
+            qr_code_url: pixData.qr_code_url,
+            expires_at: pixData.expires_at
         });
     } catch (error) {
         const pagarmeError = error.response?.data;
@@ -91,7 +92,7 @@ router.post('/card', async (req, res) => {
     try {
         const { plan, user_id, email, name, card_name, card_number, card_expiry, card_cvv, document, phone } = req.body;
         
-        const amount = plan === 'annual' ? 93000 : 4990;
+        const amount = plan === 'annual' ? 93000 : 199; // 199 = R$ 1,99
         const itemName = plan === 'annual' ? "Assinatura Anual - VisionX Premium" : "Assinatura Mensal - VisionX Premium";
 
         const [exp_month, exp_year] = card_expiry.split('/');
