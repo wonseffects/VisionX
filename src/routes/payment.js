@@ -81,8 +81,12 @@ router.post('/pix', async (req, res) => {
         });
     } catch (error) {
         const pagarmeError = error.response?.data;
+        let errorMessage = pagarmeError?.message || error.message;
+        if (pagarmeError?.errors && typeof pagarmeError.errors === 'object') {
+            const detailedErrors = Object.entries(pagarmeError.errors).map(([k, v]) => `${k}: ${v.join(', ')}`).join(' | ');
+            if (detailedErrors) errorMessage += ` (${detailedErrors})`;
+        }
         console.error('Pix generation error:', pagarmeError || error.message);
-        const errorMessage = pagarmeError?.message || pagarmeError?.errors?.[0]?.message || error.message;
         res.status(500).json({ error: `Erro ao conectar ao Pagar.me: ${errorMessage}` });
     }
 });
@@ -119,7 +123,14 @@ router.post('/card', async (req, res) => {
                         holder_name: card_name,
                         exp_month: parseInt(exp_month),
                         exp_year: parseInt(exp_year.length === 2 ? `20${exp_year}` : exp_year),
-                        cvv: card_cvv
+                        cvv: card_cvv,
+                        billing_address: {
+                            line_1: "Rua do Cliente, 123",
+                            zip_code: "01000000",
+                            city: "São Paulo",
+                            state: "SP",
+                            country: "BR"
+                        }
                     }
                 }
             }],
@@ -137,18 +148,23 @@ router.post('/card', async (req, res) => {
         
         // Pagar.me handles authorization immediately for credit cards (synchronous or async)
         if (order.status === 'paid' || order.status === 'processing') {
-             // Mock update if processing is fast
              if(order.status === 'paid' && user_id) {
                  await supabase.from('profiles').update({ subscription_status: 'premium' }).eq('id', user_id);
              }
              res.json({ success: true, status: order.status });
         } else {
-             res.status(400).json({ error: 'Pagamento não aprovado pelo cartão.' });
+             const chargeObj = order.charges?.[0] || {};
+             const chargeError = chargeObj.last_transaction?.gateway_response?.errors?.[0]?.message || 'Pagamento recusado pelo banco emissor.';
+             res.status(400).json({ error: `Pagamento não aprovado: ${chargeError}` });
         }
     } catch (error) {
         const pagarmeError = error.response?.data;
+        let errorMessage = pagarmeError?.message || error.message;
+        if (pagarmeError?.errors && typeof pagarmeError.errors === 'object') {
+            const detailedErrors = Object.entries(pagarmeError.errors).map(([k, v]) => `${k}: ${v.join(', ')}`).join(' | ');
+            if (detailedErrors) errorMessage += ` (${detailedErrors})`;
+        }
         console.error('Card processing error:', pagarmeError || error.message);
-        const errorMessage = pagarmeError?.message || pagarmeError?.errors?.[0]?.message || error.message;
         res.status(500).json({ error: `Erro ao processar cartão: ${errorMessage}` });
     }
 });
