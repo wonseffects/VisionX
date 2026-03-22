@@ -26,9 +26,8 @@ router.post('/pix', async (req, res) => {
             items: [{ amount: amount, description: itemName, quantity: 1, code: "visionx_premium" }],
             customer: {
                 name: name || 'Usuário VisionX',
-                email: email || 'usuario@visionx.com',
-                type: 'individual',
-                document: '00000000000' // Stub document as required by some gateways, or omit if possible
+                email: email || 'usuario@visionx.com'
+                // Removed invalid '00000000000' document and 'type' which cause validation errors
             },
             payments: [{
                 payment_method: "pix",
@@ -58,8 +57,10 @@ router.post('/pix', async (req, res) => {
             qr_code_url: pixData.qr_code_url
         });
     } catch (error) {
-        console.error('Pix generation error:', error.response?.data || error.message);
-        res.status(500).json({ error: 'Erro ao conectar ao Pagar.me: Verifique suas chaves de API.' });
+        const pagarmeError = error.response?.data;
+        console.error('Pix generation error:', pagarmeError || error.message);
+        const errorMessage = pagarmeError?.message || pagarmeError?.errors?.[0]?.message || error.message;
+        res.status(500).json({ error: `Erro ao conectar ao Pagar.me: ${errorMessage}` });
     }
 });
 
@@ -117,8 +118,10 @@ router.post('/card', async (req, res) => {
              res.status(400).json({ error: 'Pagamento não aprovado pelo cartão.' });
         }
     } catch (error) {
-        console.error('Card processing error:', error.response?.data || error.message);
-        res.status(500).json({ error: 'Erro ao processar cartão: Verifique os dados ou a chave da API.' });
+        const pagarmeError = error.response?.data;
+        console.error('Card processing error:', pagarmeError || error.message);
+        const errorMessage = pagarmeError?.message || pagarmeError?.errors?.[0]?.message || error.message;
+        res.status(500).json({ error: `Erro ao processar cartão: ${errorMessage}` });
     }
 });
 
