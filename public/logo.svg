@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Dark Tech Background Gradient -->
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#1e1b4b" />
+    </linearGradient>
+
+    <!-- Glowing V left wing -->
+    <linearGradient id="v-left" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06b6d4" />
+      <stop offset="50%" stop-color="#3b82f6" />
+      <stop offset="100%" stop-color="#8b5cf6" />
+    </linearGradient>
+
+    <!-- Glowing V right wing -->
+    <linearGradient id="v-right" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#d946ef" />
+      <stop offset="100%" stop-color="#8b5cf6" />
+    </linearGradient>
+
+    <!-- Glowing X overlap element -->
+    <linearGradient id="x-line" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#06b6d4" />
+    </linearGradient>
+    
+    <!-- Neon Drop Shadow -->
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="15" flood-color="#8b5cf6" flood-opacity="0.6"/>
+    </filter>
+    <filter id="glow-cyan" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="0" stdDeviation="10" flood-color="#06b6d4" flood-opacity="0.8"/>
+    </filter>
+  </defs>
+
+  <!-- App Rounded Rect Background -->
+  <rect width="512" height="512" rx="115" fill="url(#bg)" />
+
+  <!-- The "V" Shape -->
+  <path d="M 120 160 L 256 380 L 220 380 L 100 160 Z" fill="url(#v-left)" filter="url(#glow)" />
+  <path d="M 392 160 L 256 380 L 292 380 L 412 160 Z" fill="url(#v-right)" filter="url(#glow)" />
+
+  <!-- Data Node / Eye abstract center -->
+  <circle cx="256" cy="350" r="28" fill="#ffffff" filter="url(#glow-cyan)" />
+  <circle cx="256" cy="350" r="12" fill="#0f172a" />
+
+  <!-- Analytics Line abstract X -->
+  <path d="M 160 260 L 352 260 L 372 230 L 140 230 Z" fill="url(#x-line)" opacity="0.9" style="mix-blend-mode: screen;" />
+  <path d="M 190 310 L 322 310 L 332 290 L 180 290 Z" fill="url(#x-line)" opacity="0.7" style="mix-blend-mode: screen;" />
+
+  <!-- Data dot -->
+  <circle cx="362" cy="245" r="8" fill="#10b981" filter="url(#glow-cyan)" />
+  <circle cx="150" cy="245" r="8" fill="#10b981" filter="url(#glow-cyan)" />
+
+</svg>

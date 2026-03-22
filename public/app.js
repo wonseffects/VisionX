@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const div = document.createElement('div');
         div.className = `message ${role}`;
         div.innerHTML = `
-            ${role === 'system' ? '<div class="avatar-system">V</div>' : ''}
+            ${role === 'system' ? '<div class="avatar-system" style="background: transparent; padding: 0;"><img src="logo.svg" style="width: 100%; height: 100%; border-radius: 50%;"></div>' : ''}
             <div class="message-bubble">${content}</div>
         `;
         chatMessages.appendChild(div);
@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const div = document.createElement('div');
         div.className = 'message system';
         div.innerHTML = `
-            <div class="avatar-system">V</div>
+            <div class="avatar-system" style="background: transparent; padding: 0;"><img src="logo.svg" style="width: 100%; height: 100%; border-radius: 50%;"></div>
             <div class="message-bubble" style="width: 100%;">
                 <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px;">
                     Analytics — ${new Date(date).toLocaleString()}
@@ -269,7 +269,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (newChatBtn) newChatBtn.addEventListener('click', () => {
         chatMessages.innerHTML = `
             <div class="message system">
-                <div class="avatar-system">V</div>
+                <div class="avatar-system" style="background: transparent; padding: 0;"><img src="logo.svg" style="width: 100%; height: 100%; border-radius: 50%;"></div>
                 <div class="message-bubble">
                     <h2>Olá! Eu sou o Vision X.</h2>
                     <p>Transforme suas perguntas em dashboards profissionais. Tente algo como:</p>
