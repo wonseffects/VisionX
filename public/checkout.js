@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         planDescDisplay.innerText = 'Acesso ilimitado + 2 Meses Grátis + Acesso Antecipado';
     } else {
         planNameDisplay.innerText = 'Pro Mensal';
-        planPriceDisplay.innerText = 'R$ 1,99/mês (Teste)'; // Change to 49,90 later
+        planPriceDisplay.innerText = 'R$ 49,90/mês';
         planDescDisplay.innerText = 'Geração ilimitada, suporte 24/7 e exportação HTML.';
     }
 
