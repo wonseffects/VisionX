@@ -14,10 +14,24 @@ const getPagarmeAuth = () => {
     return `Basic ${Buffer.from(key + ':').toString('base64')}`;
 };
 
+// Helper for Phone Parsing
+const parsePhone = (phoneStr) => {
+    if (!phoneStr) return null;
+    const justNumbers = phoneStr.replace(/\D/g, '');
+    if (justNumbers.length >= 10) {
+        return {
+            country_code: '55',
+            area_code: justNumbers.substring(0, 2),
+            number: justNumbers.substring(2)
+        };
+    }
+    return null;
+};
+
 // 1. Generate PIX Payment
 router.post('/pix', async (req, res) => {
     try {
-        const { plan, user_id, email, name, document } = req.body;
+        const { plan, user_id, email, name, document, phone } = req.body;
         
         const amount = plan === 'annual' ? 93000 : 4990;
         const itemName = plan === 'annual' ? "Assinatura Anual - VisionX Premium" : "Assinatura Mensal - VisionX Premium";
@@ -28,7 +42,10 @@ router.post('/pix', async (req, res) => {
                 name: name || 'Usuário VisionX',
                 email: email || 'usuario@visionx.com',
                 type: 'individual',
-                document: document // Added back, but now expecting a real CPF from frontend
+                document: document,
+                phones: {
+                    mobile_phone: parsePhone(phone)
+                }
             },
             payments: [{
                 payment_method: "pix",
@@ -72,7 +89,7 @@ router.post('/pix', async (req, res) => {
 // 2. Process Credit Card
 router.post('/card', async (req, res) => {
     try {
-        const { plan, user_id, email, name, card_name, card_number, card_expiry, card_cvv, document } = req.body;
+        const { plan, user_id, email, name, card_name, card_number, card_expiry, card_cvv, document, phone } = req.body;
         
         const amount = plan === 'annual' ? 93000 : 4990;
         const itemName = plan === 'annual' ? "Assinatura Anual - VisionX Premium" : "Assinatura Mensal - VisionX Premium";
@@ -86,7 +103,10 @@ router.post('/card', async (req, res) => {
                 name: name || 'Usuário VisionX',
                 email: email || 'usuario@visionx.com',
                 type: 'individual',
-                document: document // Pass CPF to card too
+                document: document,
+                phones: {
+                    mobile_phone: parsePhone(phone)
+                }
             },
             payments: [{
                 payment_method: "credit_card",

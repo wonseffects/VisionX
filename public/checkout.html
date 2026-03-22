@@ -95,55 +95,82 @@
         </div>
 
         <div class="checkout-right">
-            <h3 style="margin-bottom: 20px; font-size: 1.2rem;">Método de Pagamento</h3>
-            
-            <div class="form-group" style="margin-bottom: 20px;">
-                <label>Seu CPF (Necessário para a transação)</label>
-                <input type="text" id="user-cpf" placeholder="000.000.000-00" maxlength="14" required>
-            </div>
-
-            <div class="payment-methods">
-                <button id="tab-pix" class="btn-pix">Pix</button>
-                <button id="tab-card" class="btn-card inactive">Cartão de Crédito</button>
-            </div>
-
-            <div id="payment-msg" class="auth-message" style="display:none; margin-bottom: 20px;"></div>
-
-            <!-- Formulário PIX -->
-            <div id="form-pix" style="text-align: center;">
-                <p style="margin-bottom: 20px; font-size: 0.9rem; color: var(--text-muted);">Pagamento aprovado instantaneamente.</p>
-                <button id="btn-generate-pix" class="btn-primary" style="width: 100%; background: #10b981;">Gerar QR Code Pix</button>
+            <!-- PASSO 1: DADOS -->
+            <div id="step-1-dados">
+                <h3 style="margin-bottom: 20px; font-size: 1.2rem;">1. Seus Dados</h3>
                 
-                <div id="pix-container" style="display: none; margin-top: 20px;">
-                    <img id="pix-img" src="" alt="QR Code Pix" style="width: 200px; height: 200px; border-radius: 10px; margin: 0 auto 15px auto; display: block; background: white; padding: 10px;">
-                    <input type="text" id="pix-code" readonly style="width: 100%; background: var(--glass-bg); border: 1px solid var(--glass-border); color: white; padding: 10px; border-radius: 8px; margin-bottom: 10px; text-align: center; font-size: 0.75rem;" value="">
-                    <button id="btn-copy-pix" class="btn-secondary" style="width: 100%; padding: 0.8rem;"><i data-lucide="copy" style="width: 16px;"></i> Copiar Código Pix</button>
-                    <p style="margin-top: 20px; font-size: 0.85rem; color: var(--text-muted); display: flex; justify-content: center; align-items: center; gap: 8px;"><i data-lucide="loader" class="spin-icon"></i> Aguardando pagamento...</p>
+                <div class="form-group">
+                    <label>Nome Completo</label>
+                    <input type="text" id="user-name" placeholder="Seu nome completo" required>
                 </div>
+
+                <div class="form-group">
+                    <label>CPF (Necessário para transação)</label>
+                    <input type="text" id="user-cpf" placeholder="000.000.000-00" maxlength="14" required>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label>Celular (com DDD)</label>
+                    <input type="text" id="user-phone" placeholder="(00) 00000-0000" maxlength="15" required>
+                </div>
+
+                <button type="button" id="btn-next-step" class="btn-primary" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    Continuar para Pagamento <i data-lucide="arrow-right" style="width: 16px;"></i>
+                </button>
             </div>
 
-            <!-- Formulário Cartão -->
-            <form id="form-card" style="display: none;">
-                <div class="form-group">
-                    <label>Nome no Cartão</label>
-                    <input type="text" id="card-name" placeholder="Nome impresso no cartão" required>
+            <!-- PASSO 2: PAGAMENTO -->
+            <div id="step-2-pagamento" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3 style="font-size: 1.2rem; margin: 0;">2. Pagamento</h3>
+                    <button type="button" id="btn-back-step" style="background: none; border: none; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; gap: 4px; font-size: 0.85rem;">
+                        <i data-lucide="arrow-left" style="width: 14px;"></i> Voltar
+                    </button>
                 </div>
-                <div class="form-group">
-                    <label>Número do Cartão</label>
-                    <input type="text" id="card-number" placeholder="0000 0000 0000 0000" maxlength="19" required>
+
+                <div class="payment-methods">
+                    <button id="tab-pix" class="btn-pix">Pix</button>
+                    <button id="tab-card" class="btn-card inactive">Cartão de Crédito</button>
                 </div>
-                <div style="display: flex; gap: 15px;">
-                    <div class="form-group" style="flex: 1;">
-                        <label>Validade</label>
-                        <input type="text" id="card-expiry" placeholder="MM/AA" maxlength="5" required>
+
+                <div id="payment-msg" class="auth-message" style="display:none; margin-bottom: 20px;"></div>
+
+                <!-- Formulário PIX -->
+                <div id="form-pix" style="text-align: center;">
+                    <p style="margin-bottom: 20px; font-size: 0.9rem; color: var(--text-muted);">Pagamento aprovado instantaneamente.</p>
+                    <button id="btn-generate-pix" class="btn-primary" style="width: 100%; background: #10b981;">Gerar QR Code Pix</button>
+                    
+                    <div id="pix-container" style="display: none; margin-top: 20px;">
+                        <img id="pix-img" src="" alt="QR Code Pix" style="width: 200px; height: 200px; border-radius: 10px; margin: 0 auto 15px auto; display: block; background: white; padding: 10px;">
+                        <input type="text" id="pix-code" readonly style="width: 100%; background: var(--glass-bg); border: 1px solid var(--glass-border); color: white; padding: 10px; border-radius: 8px; margin-bottom: 10px; text-align: center; font-size: 0.75rem;" value="">
+                        <button id="btn-copy-pix" class="btn-secondary" style="width: 100%; padding: 0.8rem;"><i data-lucide="copy" style="width: 16px;"></i> Copiar Código Pix</button>
+                        <p style="margin-top: 20px; font-size: 0.85rem; color: var(--text-muted); display: flex; justify-content: center; align-items: center; gap: 8px;"><i data-lucide="loader" class="spin-icon"></i> Aguardando pagamento...</p>
                     </div>
-                    <div class="form-group" style="flex: 1;">
-                        <label>CVV</label>
-                        <input type="text" id="card-cvv" placeholder="123" maxlength="4" required>
-                    </div>
                 </div>
-                <button type="submit" id="btn-pay-card" class="btn-primary" style="width: 100%; margin-top: 10px;">Finalizar Assinatura</button>
-            </form>
+
+                <!-- Formulário Cartão -->
+                <form id="form-card" style="display: none;">
+                    <div class="form-group">
+                        <label>Nome no Cartão</label>
+                        <input type="text" id="card-name" placeholder="Nome impresso no cartão" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Número do Cartão</label>
+                        <input type="text" id="card-number" placeholder="0000 0000 0000 0000" maxlength="19" required>
+                    </div>
+                    <div style="display: flex; gap: 15px;">
+                        <div class="form-group" style="flex: 1;">
+                            <label>Validade</label>
+                            <input type="text" id="card-expiry" placeholder="MM/AA" maxlength="5" required>
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label>CVV</label>
+                            <input type="text" id="card-cvv" placeholder="123" maxlength="4" required>
+                        </div>
+                    </div>
+                    <button type="submit" id="btn-pay-card" class="btn-primary" style="width: 100%; margin-top: 10px;">Finalizar Assinatura</button>
+                </form>
+            </div>
         </div>
     </div>
 

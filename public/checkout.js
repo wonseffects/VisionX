@@ -139,6 +139,73 @@ document.addEventListener('DOMContentLoaded', async () => {
         msgPayment.style.display = 'none';
     });
 
+    // --- Input Masks ---
+    const maskCPF = (v) => {
+        v = v.replace(/\D/g,"");
+        v = v.replace(/(\d{3})(\d)/,"$1.$2");
+        v = v.replace(/(\d{3})(\d)/,"$1.$2");
+        v = v.replace(/(\d{3})(\d{1,2})$/,"$1-$2");
+        return v;
+    };
+    const maskPhone = (v) => {
+        v = v.replace(/\D/g,"");
+        v = v.replace(/^(\d{2})(\d)/g,"($1) $2");
+        v = v.replace(/(\d)(\d{4})$/,"$1-$2");
+        return v;
+    };
+    const maskCard = (v) => {
+        v = v.replace(/\D/g,"");
+        v = v.replace(/(\d{4})(?=\d)/g,"$1 ");
+        return v;
+    };
+    const maskExpiry = (v) => {
+        v = v.replace(/\D/g,"");
+        v = v.replace(/(\d{2})(?=\d)/,"$1/");
+        return v;
+    };
+
+    document.getElementById('user-cpf')?.addEventListener('input', (e) => e.target.value = maskCPF(e.target.value));
+    document.getElementById('user-phone')?.addEventListener('input', (e) => e.target.value = maskPhone(e.target.value));
+    document.getElementById('card-number')?.addEventListener('input', (e) => e.target.value = maskCard(e.target.value));
+    document.getElementById('card-expiry')?.addEventListener('input', (e) => e.target.value = maskExpiry(e.target.value));
+
+    // --- Step Navigation ---
+    const step1 = document.getElementById('step-1-dados');
+    const step2 = document.getElementById('step-2-pagamento');
+    const btnNextStep = document.getElementById('btn-next-step');
+    const btnBackStep = document.getElementById('btn-back-step');
+
+    btnNextStep?.addEventListener('click', () => {
+        const name = document.getElementById('user-name').value;
+        const cpf = document.getElementById('user-cpf').value;
+        const phone = document.getElementById('user-phone').value;
+
+        if (!name || cpf.length < 14 || phone.length < 14) {
+            showMessagePay('Por favor, preencha todos os seus dados corretamente.', 'error');
+            // Move message to Step 1 if it exists
+            if (!document.getElementById('step1-msg')) {
+               const msgEl = document.createElement('div');
+               msgEl.id = 'step1-msg';
+               msgEl.className = 'auth-message error';
+               msgEl.style.marginBottom = '20px';
+               step1.insertBefore(msgEl, step1.firstChild);
+            }
+            document.getElementById('step1-msg').innerText = 'Por favor, preencha nome, CPF e celular válidos.';
+            document.getElementById('step1-msg').style.display = 'block';
+            return;
+        }
+        if (document.getElementById('step1-msg')) document.getElementById('step1-msg').style.display = 'none';
+
+        step1.style.display = 'none';
+        step2.style.display = 'block';
+        lucide.createIcons();
+    });
+
+    btnBackStep?.addEventListener('click', () => {
+        step2.style.display = 'none';
+        step1.style.display = 'block';
+    });
+
     // Pix Generation
     const btnGenPix = document.getElementById('btn-generate-pix');
     const pixContainer = document.getElementById('pix-container');
@@ -163,7 +230,14 @@ document.addEventListener('DOMContentLoaded', async () => {
             const res = await fetch('/api/payment/pix', {
                 method: 'POST',
                 headers,
-                body: JSON.stringify({ plan, user_id: guestUserId, email: loggedUserEmail.innerText.split(' ')[0], document: cpfVal.replace(/\D/g, '') })
+                body: JSON.stringify({ 
+                    plan, 
+                    user_id: guestUserId, 
+                    email: loggedUserEmail.innerText.split(' ')[0], 
+                    name: document.getElementById('user-name').value,
+                    document: cpfVal.replace(/\D/g, ''),
+                    phone: document.getElementById('user-phone').value
+                })
             });
             const data = await res.json();
             
@@ -237,7 +311,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                     plan,
                     user_id: guestUserId,
                     email: loggedUserEmail.innerText.split(' ')[0],
+                    name: document.getElementById('user-name').value,
                     document: cpfVal.replace(/\D/g, ''),
+                    phone: document.getElementById('user-phone').value,
                     card_name: document.getElementById('card-name').value,
                     card_number: document.getElementById('card-number').value.replace(/\s+/g, ''),
                     card_expiry: document.getElementById('card-expiry').value,
