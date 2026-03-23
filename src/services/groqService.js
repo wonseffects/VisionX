@@ -1,38 +1,29 @@
-import Groq from 'groq-sdk';
 import fs from 'fs';
 import path from 'path';
-import dotenv from 'dotenv';
 
-dotenv.config({ override: true });
-
-const groq = new Groq({
-    apiKey: process.env.GROQ_API_KEY,
-});
-
-const systemPromptPath = path.join(process.cwd(), 'prompts', 'system_prompt.txt');
+// Load the local template instead of the system prompt
+const templatePath = path.join(process.cwd(), 'src', 'templates', 'dashboardTemplate.html');
 
 export const generateDashboard = async (userPrompt, contextData) => {
     try {
-        const systemPromptTemplate = fs.readFileSync(systemPromptPath, 'utf-8');
-        const systemPrompt = systemPromptTemplate.replace('{context_data}', JSON.stringify(contextData, null, 2));
+        console.log('Generating dashboard via local template (bypassing Groq LLM to avoid token limits)...');
+        
+        // Read the static HTML file
+        let templateContent = fs.readFileSync(templatePath, 'utf-8');
+        
+        // Create the script tag that injects the JSON data
+        const dataInjection = `
+  <script>
+    window.DASHBOARD_DATA = ${JSON.stringify(contextData)};
+  </script>`;
+        
+        // Replace the injection point marker in the HTML
+        const finalHtml = templateContent.replace('<!-- DATA_INJECTION_POINT -->', dataInjection);
 
-        const completion = await groq.chat.completions.create({
-            messages: [
-                {
-                    role: 'system',
-                    content: systemPrompt
-                },
-                {
-                    role: 'user',
-                    content: `Gere o dashboard para: "${userPrompt}"`
-                }
-            ],
-            model: 'llama-3.3-70b-versatile',
-        });
-
-        return completion.choices[0].message.content;
+        // Return the final HTML string instantaneously
+        return finalHtml;
     } catch (error) {
-        console.error('Error in groqService:', error);
-        throw new Error('Falha ao gerar dashboard via Groq.');
+        console.error('Error interpolating dashboard template:', error);
+        throw new Error('Falha ao gerar dashboard localmente.');
     }
 };

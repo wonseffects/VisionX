@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vision X — DataViz AI</title>
+    <title>Vision X - Dashboard</title>
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,7 +20,8 @@
         <aside class="sidebar">
             <div class="sidebar-header">
                 <div class="logo-container">
-                    <div class="logo-icon" style="background: transparent; padding: 0; box-shadow: none;"><img src="logo.svg" style="width: 100%; height: 100%; border-radius: 8px;"></div>
+                    <div class="logo-icon" style="background: transparent; padding: 0; box-shadow: none;"><img
+                            src="logo.svg" style="width: 100%; height: 100%; border-radius: 8px;"></div>
                     <h1>Vision X</h1>
                 </div>
             </div>
@@ -65,7 +66,8 @@
                 <div id="chat-messages" class="chat-messages">
                     <!-- Placeholder Welcome Message -->
                     <div class="message system">
-                        <div class="avatar-system" style="background: transparent; padding: 0;"><img src="logo.svg" style="width: 100%; height: 100%; border-radius: 50%;"></div>
+                        <div class="avatar-system" style="background: transparent; padding: 0;"><img src="logo.svg"
+                                style="width: 100%; height: 100%; border-radius: 50%;"></div>
                         <div class="message-bubble">
                             <h2>Olá! Eu sou o Vision X.</h2>
                             <p>Transforme suas perguntas em dashboards profissionais. Tente algo como:</p>
@@ -129,11 +131,14 @@
                 <button class="close-delete-modal close-modal">&times;</button>
             </div>
             <div class="modal-body">
-                <p style="margin-bottom: 20px;">Tem certeza que deseja apagar essa conversa? Uma vez deletada ela nunca mais poderá ser restaurada!</p>
+                <p style="margin-bottom: 20px;">Tem certeza que deseja apagar essa conversa? Uma vez deletada ela nunca
+                    mais poderá ser restaurada!</p>
             </div>
-            <div class="modal-footer" style="display: flex; gap: 10px; justify-content: flex-end; padding: 1.5rem 2rem;">
+            <div class="modal-footer"
+                style="display: flex; gap: 10px; justify-content: flex-end; padding: 1.5rem 2rem;">
                 <button id="cancel-delete-btn" class="btn-secondary">Cancelar</button>
-                <button id="confirm-delete-btn" class="btn-primary" style="background: #ef4444; box-shadow: 0 8px 20px -5px rgba(239, 68, 68, 0.4);">Excluir</button>
+                <button id="confirm-delete-btn" class="btn-primary"
+                    style="background: #ef4444; box-shadow: 0 8px 20px -5px rgba(239, 68, 68, 0.4);">Excluir</button>
             </div>
         </div>
     </div>
@@ -142,12 +147,16 @@
     <div id="upgrade-modal" class="modal">
         <div class="modal-content" style="max-width: 500px;">
             <div class="modal-header">
-                <h2>Faça Upgrade para o Premium <i data-lucide="zap" style="color: #eab308; width: 18px; display: inline-block;"></i></h2>
-                <button class="close-upgrade-modal close-modal" onclick="document.getElementById('upgrade-modal').style.display='none'">&times;</button>
+                <h2>Faça Upgrade para o Premium <i data-lucide="zap"
+                        style="color: #eab308; width: 18px; display: inline-block;"></i></h2>
+                <button class="close-upgrade-modal close-modal"
+                    onclick="document.getElementById('upgrade-modal').style.display='none'">&times;</button>
             </div>
             <div class="modal-body auth-form-body">
-                <p style="margin-bottom: 20px; font-size: 0.95rem; color: var(--text-muted);">Assine o VisionX Premium para ter acesso ilimitado a todas as funcionalidades, respostas mais rápidas e análises complexas.</p>
-                
+                <p style="margin-bottom: 20px; font-size: 0.95rem; color: var(--text-muted);">Assine o VisionX Premium
+                    para ter acesso ilimitado a todas as funcionalidades, respostas mais rápidas e análises complexas.
+                </p>
+
                 <div class="payment-methods" style="display: flex; gap: 10px; margin-bottom: 20px;">
                     <button id="btn-pay-pix" class="btn-primary" style="flex: 1; background: #10b981;">Pix</button>
                     <button id="btn-pay-card" class="btn-secondary" style="flex: 1;">Cartão de Crédito</button>
@@ -159,38 +168,51 @@
                 <!-- Formulário PIX -->
                 <div id="pix-payment-form" style="display: block; text-align: center;">
                     <p style="margin-bottom: 15px; font-size: 0.9rem;">Valor: <strong>R$ 49,90 / mês</strong></p>
-                    <button id="generate-pix-btn" class="btn-primary" style="width: 100%; background: #10b981;">Gerar QR Code Pix</button>
-                    
+                    <button id="generate-pix-btn" class="btn-primary" style="width: 100%; background: #10b981;">Gerar QR
+                        Code Pix</button>
+
                     <div id="pix-qr-container" style="display: none; margin-top: 20px;">
-                        <img id="pix-qr-image" src="" alt="QR Code Pix" style="max-width: 200px; border-radius: 10px; margin-bottom: 15px;">
-                        <input type="text" id="pix-copy-paste" readonly style="margin-bottom: 10px; text-align: center; font-size: 0.8rem;" value="">
-                        <button id="copy-pix-btn" class="btn-secondary" style="width: 100%; padding: 0.5rem;"><i data-lucide="copy"></i> Copiar Código Pix</button>
-                        <p style="margin-top: 15px; font-size: 0.8rem; color: var(--text-muted);"><i data-lucide="loader" class="spin-icon"></i> Aguardando pagamento...</p>
+                        <img id="pix-qr-image" src="" alt="QR Code Pix"
+                            style="max-width: 200px; border-radius: 10px; margin-bottom: 15px;">
+                        <input type="text" id="pix-copy-paste" readonly
+                            style="margin-bottom: 10px; text-align: center; font-size: 0.8rem;" value="">
+                        <button id="copy-pix-btn" class="btn-secondary" style="width: 100%; padding: 0.5rem;"><i
+                                data-lucide="copy"></i> Copiar Código Pix</button>
+                        <p style="margin-top: 15px; font-size: 0.8rem; color: var(--text-muted);"><i
+                                data-lucide="loader" class="spin-icon"></i> Aguardando pagamento...</p>
                     </div>
                 </div>
 
                 <!-- Formulário Cartão -->
                 <form id="card-payment-form" style="display: none;">
-                    <p style="margin-bottom: 15px; font-size: 0.9rem; text-align: center;">Valor: <strong>R$ 49,90 / mês</strong></p>
-                    
-                    <label style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 5px; display: block;">Nome no Cartão</label>
+                    <p style="margin-bottom: 15px; font-size: 0.9rem; text-align: center;">Valor: <strong>R$ 49,90 /
+                            mês</strong></p>
+
+                    <label
+                        style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 5px; display: block;">Nome
+                        no Cartão</label>
                     <input type="text" id="card-name" placeholder="Nome como no cartão" required>
-                    
-                    <label style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 5px; display: block;">Número do Cartão</label>
+
+                    <label
+                        style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 5px; display: block;">Número
+                        do Cartão</label>
                     <input type="text" id="card-number" placeholder="0000 0000 0000 0000" maxlength="19" required>
-                    
+
                     <div style="display: flex; gap: 10px;">
                         <div style="flex: 1;">
-                            <label style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 5px; display: block;">Validade</label>
+                            <label
+                                style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 5px; display: block;">Validade</label>
                             <input type="text" id="card-expiry" placeholder="MM/AA" maxlength="5" required>
                         </div>
                         <div style="flex: 1;">
-                            <label style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 5px; display: block;">CVV</label>
+                            <label
+                                style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 5px; display: block;">CVV</label>
                             <input type="text" id="card-cvv" placeholder="123" maxlength="4" required>
                         </div>
                     </div>
 
-                    <button type="submit" id="process-card-btn" class="btn-primary" style="width: 100%; margin-top: 10px;">Pagar via Cartão</button>
+                    <button type="submit" id="process-card-btn" class="btn-primary"
+                        style="width: 100%; margin-top: 10px;">Pagar via Cartão</button>
                 </form>
             </div>
         </div>
