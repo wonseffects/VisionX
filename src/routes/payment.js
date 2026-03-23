@@ -33,7 +33,7 @@ router.post('/pix', async (req, res) => {
     try {
         const { plan, user_id, email, name, document, phone } = req.body;
         
-        const amount = plan === 'annual' ? 93000 : 4990;
+        const amount = plan === 'annual' ? 49800 : 4990;
         const itemName = plan === 'annual' ? "Assinatura Anual - VisionX Premium" : "Assinatura Mensal - VisionX Premium";
         
         const payload = {
@@ -96,7 +96,7 @@ router.post('/card', async (req, res) => {
     try {
         const { plan, user_id, email, name, card_name, card_number, card_expiry, card_cvv, document, phone } = req.body;
         
-        const amount = plan === 'annual' ? 93000 : 4990;
+        const amount = plan === 'annual' ? 49800 : 4990;
         const itemName = plan === 'annual' ? "Assinatura Anual - VisionX Premium" : "Assinatura Mensal - VisionX Premium";
 
         const [exp_month, exp_year] = card_expiry.split('/');
