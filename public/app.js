@@ -205,13 +205,19 @@ document.addEventListener('DOMContentLoaded', async () => {
                 loadHistory(); // Refresh history list
             } else {
                 if (res.status === 403 || data.needsSubscription) {
+                    const isDailyLimit = data.reason === 'daily_limit';
+                    const title = isDailyLimit ? 'Limite Diário Atingido' : 'Teste Grátis Expirado';
+                    const message = isDailyLimit 
+                        ? 'Você atingiu seu limite de 3 análises por dia. Faça o upgrade para o PRO para ter acesso ilimitado!' 
+                        : 'Seu período de 3 dias de teste grátis chegou ao fim. Para continuar gerando dashboards incríveis, por favor, faça o upgrade para o plano Premium.';
+
                     addMessage('system', `
                         <div style="padding: 10px 0;">
                             <h3 style="color: #ef4444; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
-                                <i data-lucide="alert-circle"></i> Teste Grátis Expirado
+                                <i data-lucide="alert-circle"></i> ${title}
                             </h3>
-                            <p style="margin-bottom: 20px;">Seu período de teste grátis chegou ao fim. Para continuar gerando dashboards incríveis, por favor, faça o upgrade para o plano Premium.</p>
-                            <button onclick="document.getElementById('upgrade-modal').style.display='flex';" class="btn-primary" style="background: var(--gradient-main); width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                            <p style="margin-bottom: 20px;">${message}</p>
+                            <button onclick="window.location.href='checkout.html';" class="btn-primary" style="background: var(--gradient-main); width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px;">
                                 <i data-lucide="zap"></i> Fazer Upgrade Agora
                             </button>
                         </div>

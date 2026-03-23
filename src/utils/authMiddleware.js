@@ -11,7 +11,7 @@ export const authMiddleware = async (req, res, next) => {
 
     if (error || !user) return res.status(401).json({ error: 'Sessão inválida' });
 
-    // Check subscription / trial status
+    // 1. Fetch or Create Profile
     let { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('*')
@@ -19,7 +19,6 @@ export const authMiddleware = async (req, res, next) => {
         .single();
 
     if (profileError || !profile) {
-        // Migration: Create profile if it doesn't exist (for older users)
         const { data: newProfile, error: createError } = await supabase
             .from('profiles')
             .insert([{ id: user.id, full_name: user.user_metadata?.full_name || 'Usuário' }])
@@ -28,11 +27,7 @@ export const authMiddleware = async (req, res, next) => {
 
         if (createError) {
             console.error('Profile Creation Error:', createError);
-            return res.status(500).json({
-                error: 'Erro ao criar perfil de usuário',
-                details: createError.message,
-                hint: 'Verifique se você executou o script SQL no Supabase'
-            });
+            return res.status(500).json({ error: 'Erro ao criar perfil de usuário' });
         }
         profile = newProfile;
     }
@@ -40,16 +35,30 @@ export const authMiddleware = async (req, res, next) => {
     req.user = user;
     req.profile = profile;
 
-    // Trial enforcement (3 days = 259200000 ms)
+    // 2. Subscription/Trial Enforcement
     if (profile.subscription_status === 'trial') {
+        // A. Check 3-day duration
         const trialStart = new Date(profile.trial_start).getTime();
         const now = new Date().getTime();
         const threeDaysMs = 3 * 24 * 60 * 60 * 1000;
 
         if (now - trialStart > threeDaysMs) {
             return res.status(403).json({
-                error: 'Teste grátis expirado',
-                needsSubscription: true
+                error: 'Seu período de 3 dias de teste grátis expirou.',
+                needsSubscription: true,
+                reason: 'trial_expired'
+            });
+        }
+
+        // B. Check daily limit (3 chats per day)
+        const { getTodayChatCount } = await import('../services/supabaseService.js');
+        const dailyCount = await getTodayChatCount(user.id);
+
+        if (dailyCount >= 3) {
+            return res.status(403).json({
+                error: 'Você atingiu o limite de 3 análises diárias do plano gratuito.',
+                needsSubscription: true,
+                reason: 'daily_limit'
             });
         }
     }
